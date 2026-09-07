@@ -254,6 +254,11 @@
   width: 100%;
   flex-wrap: nowrap;
   overflow-x: auto;
+  /* Il cuoricino finiva ESATTAMENTE sul bordo destro del contenitore
+     scorrevole (0px di margine): bastava un arrotondamento di
+     sub-pixel per tagliarlo a metà. Questo padding gli dà un margine di
+     sicurezza, sia a riposo sia a fine scroll. */
+  padding-right: 4px;
   scrollbar-width: none;   /* Firefox */
   -ms-overflow-style: none; /* IE/Edge legacy */
 }
