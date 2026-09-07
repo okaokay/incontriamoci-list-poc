@@ -12,8 +12,10 @@
   --list-text-muted: #47464b;
   --list-favorite-active: #fe9bdd; /* stesso rosa brand usato per il cuoricino nella card TopList */
 
-  --list-mobile-badge-bg: #fff0f5; /* Figma node 409:3773, tinta rosa pallido dei badge mobile */
-  --list-mobile-muted: #6b7280;
+  /* Allineato al rosa brand della card TopList (".toplist-card__name",
+     stesso #fe9bdd) su richiesta esplicita del cliente — sostituisce la
+     tinta rosa pallido #fff0f5 del mockup Figma originale. */
+  --list-mobile-badge-bg: #fe9bdd;
   --list-mobile-title: #111827;
   --list-mobile-text: #1f2937;
   --list-mobile-icon-muted: #9ca3af;
@@ -124,10 +126,14 @@
   flex-wrap: wrap;
 }
 
+/* Stesso trattamento ESATTO del chip nome della card TopList
+   (".toplist-card__name": sfondo #fe9bdd, bordo 1px #77767b, radius 2px)
+   — allineato su richiesta esplicita del cliente, sostituisce il grigio
+   neutro #eee del mockup Figma originale. */
 .list-item__name {
   display: inline-flex;
   padding: 3px 9px;
-  background: #eee;
+  background: #fe9bdd;
   border: 1px solid var(--list-border);
   border-radius: 2px;
   font-size: 16px;
@@ -295,8 +301,12 @@
   white-space: nowrap;
 }
 
+/* Testo/icona nero invece del grigio muto originale: sul nuovo sfondo
+   rosa pieno (allineato alla card TopList) il grigio perdeva contrasto
+   e leggibilità, esattamente come il testo nero già usato su tutti i
+   chip rosa della card TopList. */
 .list-item-mobile__badge--icon {
-  color: var(--list-mobile-muted);
+  color: #000;
 }
 
 .list-item-mobile__badge--icon svg {
