@@ -10,7 +10,6 @@
   --list-border: #77767b;        /* bordo card/badge (Figma node 344:4594) */
   --list-text: #1a1c1c;
   --list-text-muted: #47464b;
-  --list-bg: #f9f9f9;
   --list-favorite-active: #fe9bdd; /* stesso rosa brand usato per il cuoricino nella card TopList */
 
   --list-mobile-badge-bg: #fff0f5; /* Figma node 409:3773, tinta rosa pallido dei badge mobile */
@@ -57,9 +56,14 @@
   align-items: flex-start;
   gap: 16px;
   padding: 17px;
-  background: var(--list-bg);
+  /* Stesso sfondo bianco e la stessa ombra marcata della card mobile
+     (sezione 3), su richiesta esplicita del cliente — coerenza visiva
+     tra le due versioni invece del grigio piatto #f9f9f9 del mockup
+     Figma originale. */
+  background: #fff;
   border: 1px solid var(--list-border);
   border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 /* ---- 2.1) Miniatura foto ---------------------------------------------------
@@ -400,6 +404,18 @@
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+}
+
+/* Chip video/foto spostati qui sotto la descrizione (su richiesta
+   esplicita del cliente, modifica fatta direttamente in Figma): prima
+   stavano nella riga in alto insieme a nome/età, ora fanno parte del
+   blocco dettagli, fuori dal link cliccabile del titolo/descrizione
+   (sono informativi, non un'azione). */
+.list-item-mobile__meta-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .list-item-mobile__body-link {
