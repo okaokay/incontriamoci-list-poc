@@ -233,21 +233,45 @@
   padding: 16px;
   background: #fff;
   border-radius: 24px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  /* Ombra più marcata (era 0 1px 1px, quasi invisibile) per dare più
+     risalto alla card sullo sfondo grigio chiaro della pagina — su
+     richiesta esplicita del cliente. */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
+/* MAI a capo, su nessuna larghezza — stesso identico problema (e stessa
+   soluzione) già risolto nell'header della card TopList: invece di
+   restringere badge/font fino a renderli illeggibili sugli schermi più
+   stretti, la riga scorre orizzontalmente quando il contenuto non ci
+   sta (flex-wrap:nowrap + overflow-x:auto), con lo scroll come "valvola
+   di sicurezza" invece del wrapping. Scrollbar nascosta (sotto) ma la
+   riga resta scorrevole con swipe/trackpad. */
 .list-item-mobile__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   width: 100%;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;   /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+.list-item-mobile__top::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .list-item-mobile__badges {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.list-item-mobile__badge {
+  flex-shrink: 0;
 }
 
 .list-item-mobile__badge {
@@ -280,6 +304,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   background: none;
   border: none;
   padding: 0;
