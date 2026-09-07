@@ -1,0 +1,402 @@
+/* ============================================================================
+   STILE CUSTOM — COMPONENTE LIST
+   Questo file NON tocca bootstrap.min.css: lo estende soltanto (qui usato
+   solo per il grid/.container, come negli altri componenti del sito).
+   Ogni regola è commentata per spiegare "perché", non solo "cosa".
+   ============================================================================ */
+
+/* ---- Variabili colore ---------------------------------------------------- */
+:root {
+  --list-border: #77767b;        /* bordo card/badge (Figma node 344:4594) */
+  --list-text: #1a1c1c;
+  --list-text-muted: #47464b;
+  --list-bg: #f9f9f9;
+  --list-favorite-active: #fe9bdd; /* stesso rosa brand usato per il cuoricino nella card TopList */
+
+  --list-mobile-badge-bg: #fff0f5; /* Figma node 409:3773, tinta rosa pallido dei badge mobile */
+  --list-mobile-muted: #6b7280;
+  --list-mobile-title: #111827;
+  --list-mobile-text: #1f2937;
+  --list-mobile-icon-muted: #9ca3af;
+}
+
+.page-wrapper {
+  padding-top: 40px;
+  padding-bottom: 60px;
+}
+
+/* ============================================================================
+   1) SEZIONE LISTA — titolo + elenco verticale (Figma node 344:4594, "Detailed List")
+   ============================================================================ */
+.list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 32px;
+}
+
+.list-section__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--list-text);
+}
+
+.list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ============================================================================
+   2) LIST ITEM — riga desktop (Figma node 344:4595, "Detail Item 1")
+   ============================================================================ */
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 17px;
+  background: var(--list-bg);
+  border: 1px solid var(--list-border);
+  border-radius: 4px;
+}
+
+/* ---- 2.1) Miniatura foto ---------------------------------------------------
+   Quadrata 128×128, valore esatto da Figma. Una sola foto statica (non un
+   carosello come nella card TopList): questo componente mostra un elenco
+   compatto di risultati, non il dettaglio completo di un annuncio. */
+.list-item__media {
+  position: relative;
+  flex: 0 0 128px;
+  width: 128px;
+  height: 128px;
+  border: 1px solid var(--list-border);
+  border-radius: 2px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.list-item__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder "X" diagonale, stesso pattern già usato negli altri
+   componenti del sito (slider vetrine, card TopList) per lo stato "nessuna
+   foto" — mostrato solo se l'annuncio non ha ancora un `data-photo-url`
+   valorizzato (vedi commento contratto HTML in index.html). */
+.list-item__photo-placeholder {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, transparent 49.5%, #e4e4e7 49.5%, #e4e4e7 50.5%, transparent 50.5%),
+    linear-gradient(-45deg, transparent 49.5%, #e4e4e7 49.5%, #e4e4e7 50.5%, transparent 50.5%);
+}
+
+/* ---- 2.2) Contenuto testuale ----------------------------------------------- */
+.list-item__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 8px;
+}
+
+.list-item__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.list-item__badges {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.list-item__name {
+  display: inline-flex;
+  padding: 3px 9px;
+  background: #eee;
+  border: 1px solid var(--list-border);
+  border-radius: 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  white-space: nowrap;
+}
+
+.list-item__meta {
+  font-size: 16px;
+  color: var(--list-text-muted);
+  white-space: nowrap;
+}
+
+.list-item__meta--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.list-item__meta--icon svg {
+  flex-shrink: 0;
+}
+
+/* ---- 2.3) Cuoricino preferiti -----------------------------------------------
+   Stesso pattern della card TopList: click = toggle di una classe CSS
+   (".is-active"), niente chiamata di rete in questo POC (persistenza vera
+   lato Laravel, fuori scope). Qui l'icona non ha due path SVG distinti
+   come nella card TopList — il node Figma di questo componente esporta un
+   solo cuore lineare (contorno) — quindi il toggle cambia solo colore/
+   riempimento via CSS invece di scambiare due icone. */
+.list-item__favorite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--list-text-muted);
+}
+
+.list-item__favorite.is-active,
+.list-item__favorite:hover {
+  color: var(--list-favorite-active);
+}
+
+.list-item__favorite.is-active svg {
+  fill: var(--list-favorite-active);
+}
+
+.list-item__favorite:active {
+  transform: scale(0.9);
+}
+
+/* ---- 2.4) Titolo + descrizione, troncati ------------------------------------
+   Il node Figma mostra titolo su una riga sola e descrizione su 3 righe,
+   entrambi tagliati con "...": qui è un troncamento CSS vero
+   (line-clamp), non testo statico già tagliato a mano, così funziona con
+   qualsiasi lunghezza reale del titolo/descrizione dell'annuncio. */
+.list-item__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-item__description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--list-text-muted);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Link "invisibile" che copre titolo+descrizione — stesso pattern già
+   usato nella card TopList per rendere cliccabile un intero blocco senza
+   dover avvolgere anche i badge/il cuoricino (che hanno le loro azioni). */
+.list-item__body-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ============================================================================
+   3) LIST ITEM MOBILE/TABLET — Figma node 409:3773 ("ProfileCard")
+   Su richiesta esplicita del cliente (stessa regola già adottata per la
+   card TopList), la versione TABLET deve essere IDENTICA alla versione
+   mobile: sotto i 992px (soglia standard "tablet" di Bootstrap 3) si
+   mostra questo template, sopra quella soglia il template desktop
+   ".list-item" — vedi sezione 4 più sotto.
+   ============================================================================ */
+.list-item-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.list-item-mobile__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.list-item-mobile__badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.list-item-mobile__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: var(--list-mobile-badge-bg);
+  border-radius: 9999px;
+  font-size: 14px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.list-item-mobile__badge--icon {
+  color: var(--list-mobile-muted);
+}
+
+.list-item-mobile__badge--icon svg {
+  flex-shrink: 0;
+}
+
+/* Cuoricino preferiti mobile: stesso toggle della versione desktop
+   (sezione 2.3), icona lineare (stroke) invece che a riempimento — il
+   node Figma la esporta come SVG "stroke" (non "fill"), quindi
+   ".is-active" colora sia il tratto sia il riempimento per ottenere un
+   cuore pieno rosa al click, coerente con lo stato "attivo" del resto
+   del sito. */
+.list-item-mobile__favorite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  padding-left: 8px;
+  cursor: pointer;
+  color: var(--list-mobile-icon-muted);
+}
+
+.list-item-mobile__favorite.is-active {
+  color: var(--list-favorite-active);
+}
+
+.list-item-mobile__favorite.is-active svg {
+  fill: var(--list-favorite-active);
+}
+
+.list-item-mobile__favorite:active {
+  transform: scale(0.9);
+}
+
+.list-item-mobile__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.list-item-mobile__media {
+  position: relative;
+  flex: 0 0 128px;
+  width: 128px;
+  height: 192px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.list-item-mobile__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Icona "immagine assente" mostrata al centro della miniatura finché la
+   foto vera non è caricata/disponibile — stesso concetto del placeholder
+   "X" desktop, stile diverso perché qui il node Figma esporta
+   esplicitamente un'icona lineare invece del pattern a righe. In questo
+   POC resta sempre nel DOM sotto la foto (foto reale sopra, via
+   z-index/ordine), visibile solo quando "data-photo-url" manca. */
+.list-item-mobile__photo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--list-mobile-icon-muted);
+}
+
+.list-item-mobile__details {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.list-item-mobile__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 21.25px;
+  color: var(--list-mobile-title);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.list-item-mobile__description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 24.375px;
+  color: var(--list-mobile-text);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.list-item-mobile__body-link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  min-width: 0;
+}
+
+/* ============================================================================
+   4) RESPONSIVE — riga desktop vs card mobile/tablet
+   Stessa soglia e stessa identica motivazione già documentata nella card
+   TopList: 992px è il breakpoint "tablet" standard di Bootstrap 3 (dove
+   inizia ".col-md-*"), e su richiesta del cliente la versione tablet deve
+   essere IDENTICA alla mobile, non una via di mezzo col desktop.
+   ============================================================================ */
+@media (max-width: 991px) {
+  .list-item {
+    display: none;
+  }
+}
+
+@media (min-width: 992px) {
+  .list-item-mobile {
+    display: none;
+  }
+}
